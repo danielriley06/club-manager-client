@@ -17,6 +17,8 @@ const ManifestPlugin = require("webpack-manifest-plugin");
 const ModuleNotFoundPlugin = require("react-dev-utils/ModuleNotFoundPlugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin-alt");
 const typescriptFormatter = require("react-dev-utils/typescriptFormatter");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
@@ -36,11 +38,18 @@ const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
+const lessRegex = /\.less$/;
+const lessModuleRegex = /\.module\.less$/;
 
 // common function to get style loaders
 const getStyleLoaders = (cssOptions, preProcessor) => {
   const loaders = [
-    require.resolve("style-loader"),
+    {
+      loader: require.resolve("style-loader"),
+      options: {
+        insertAt: "top"
+      }
+    },
     {
       loader: require.resolve("css-loader"),
       options: cssOptions
@@ -71,6 +80,10 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
   }
   return loaders;
 };
+
+const lessLoaderBase = getStyleLoaders({
+  importLoaders: 2
+});
 
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
@@ -207,6 +220,17 @@ module.exports = {
               name: "static/media/[name].[hash:8].[ext]"
             }
           },
+          {
+            test: /\.svg$/,
+            use: [
+              {
+                loader: "@svgr/webpack",
+                options: {
+                  svgo: true
+                }
+              }
+            ]
+          },
           // Process application JS with Babel.
           // The preset includes JSX, Flow, and some ESnext features.
           {
@@ -219,25 +243,16 @@ module.exports = {
               ),
 
               plugins: [
-                [
-                  require.resolve("babel-plugin-named-asset-import"),
-                  {
-                    loaderMap: {
-                      svg: {
-                        ReactComponent: "@svgr/webpack?-prettier,-svgo![path]"
-                      }
-                    }
-                  }
-                ],
-                [require.resolve("babel-plugin-styled-components")],
                 [require.resolve("babel-plugin-graphql-tag")],
                 [
-                  require.resolve("babel-plugin-graphql-tag"),
+                  require.resolve("babel-plugin-import"),
                   {
                     libraryName: "antd",
+                    libraryDirectory: "es",
                     style: true
                   }
-                ]
+                ],
+                [require.resolve("babel-plugin-styled-components")]
               ],
               // This is a feature of `babel-loader` for webpack (not Babel itself).
               // It enables caching results in ./node_modules/.cache/babel-loader/
@@ -320,6 +335,21 @@ module.exports = {
               "sass-loader"
             )
           },
+          // Adds support for LESS
+          {
+            test: lessRegex,
+            exclude: lessModuleRegex,
+            use: [
+              ...lessLoaderBase,
+              {
+                loader: "less-loader",
+                options: {
+                  sourceMap: true,
+                  javascriptEnabled: true
+                }
+              }
+            ]
+          },
           // "file" loader makes sure those assets get served by WebpackDevServer.
           // When you `import` an asset, you get its (virtual) filename.
           // In production, they would get copied to the `build` folder.
@@ -379,6 +409,7 @@ module.exports = {
     // Generate a manifest file which contains a mapping of all asset filenames
     // to their corresponding output file so that tools can pick it up without
     // having to parse `index.html`.
+    new BundleAnalyzerPlugin(),
     new ManifestPlugin({
       fileName: "asset-manifest.json",
       publicPath: publicPath
@@ -396,7 +427,7 @@ module.exports = {
           module: "esnext",
           moduleResolution: "node",
           resolveJsonModule: true,
-          isolatedModules: true,
+          isolatedModules: false,
           noEmit: true,
           jsx: "preserve"
         },
