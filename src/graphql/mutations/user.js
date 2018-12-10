@@ -1,5 +1,5 @@
-import gql from 'graphql-tag';
-import userFragment from '@/graphql/fragments/user';
+import gql from "graphql-tag";
+import userFragment from "../fragments/user";
 
 export const CREATE_USER = gql`
   mutation createUser($parentId: String, $name: String!, $description: String) {

@@ -1,5 +1,5 @@
-import gql from 'graphql-tag';
-import divisionFragment from '@/graphql/fragments/division';
+import gql from "graphql-tag";
+import divisionFragment from "../fragments/division";
 
 export const DIVISIONS_QUERY = gql`
   query getDivisions {
