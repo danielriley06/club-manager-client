@@ -1,16 +1,5 @@
-import { State, Router, DoneFn } from "router5";
+import { DoneFn, Route, State } from "router5";
 import { userIsLoggedIn } from "../utils/authentication";
-
-export interface Route {
-  name: string;
-  path: string;
-  component?: React.Component<{}>;
-  forwardTo?: string;
-  children?: Array<Route>;
-  canActivate?();
-}
-
-export interface Routes extends Array<Route> {}
 
 export const loggedInRequired = () => (
   toState: State,
@@ -34,28 +23,28 @@ export const authenticationRequired = () => (
   return Promise.reject({ redirect: { name: "dashboard" } });
 };
 
-export const routes: Routes = [
+export const routes: Route[] = [
   {
-    name: "user",
-    path: "/user",
-    forwardTo: "user.login",
     children: [
       { name: "login", path: "/login", canActivate: authenticationRequired },
       {
+        canActivate: authenticationRequired,
         name: "register",
-        path: "/register",
-        canActivate: authenticationRequired
+        path: "/register"
       }
-    ]
+    ],
+    forwardTo: "user.login",
+    name: "user",
+    path: "/user"
   },
   {
-    name: "dashboard",
-    path: "/dashboard",
-    forwardTo: "dashboard.directory",
     children: [
       { name: "directory", path: "/directory", canActivate: loggedInRequired },
       { name: "teams", path: "/teams", canActivate: loggedInRequired },
       { name: "divisions", path: "/divisions", canActivate: loggedInRequired }
-    ]
+    ],
+    forwardTo: "dashboard.directory",
+    name: "dashboard",
+    path: "/dashboard"
   }
 ];

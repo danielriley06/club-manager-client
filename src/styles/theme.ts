@@ -1,9 +1,3 @@
-enum SizeOptions {
-  small,
-  medium,
-  large
-}
-
 export interface InputSizeInterface {
   [size: string]: InputInterface;
 }

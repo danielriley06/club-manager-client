@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import gql from "graphql-tag";
 
 const divisionFragment = gql`
   fragment divisionFragment on Division {

@@ -1,5 +1,3 @@
-"use strict";
-
 const fs = require("fs");
 const path = require("path");
 const resolve = require("resolve");
@@ -11,14 +9,14 @@ const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin");
 const WatchMissingNodeModulesPlugin = require("react-dev-utils/WatchMissingNodeModulesPlugin");
 const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
 const getCSSModuleLocalIdent = require("react-dev-utils/getCSSModuleLocalIdent");
-const getClientEnvironment = require("./env");
-const paths = require("./paths");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const ModuleNotFoundPlugin = require("react-dev-utils/ModuleNotFoundPlugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin-alt");
 const typescriptFormatter = require("react-dev-utils/typescriptFormatter");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
+const paths = require("./paths");
+const getClientEnvironment = require("./env");
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
@@ -123,7 +121,7 @@ module.exports = {
     // There are also additional JS chunk files if you use code splitting.
     chunkFilename: "static/js/[name].chunk.js",
     // This is the URL that app is served from. We use "/" in development.
-    publicPath: publicPath,
+    publicPath,
     // Point sourcemap entries to original disk location (format as URL on Windows)
     devtoolModuleFilenameTemplate: info =>
       path.resolve(info.absoluteResourcePath).replace(/\\/g, "/")
@@ -197,7 +195,8 @@ module.exports = {
           {
             options: {
               formatter: require.resolve("react-dev-utils/eslintFormatter"),
-              eslintPath: require.resolve("eslint")
+              eslintPath: require.resolve("eslint"),
+              configFile: ".eslintrc"
             },
             loader: require.resolve("eslint-loader")
           }
@@ -243,7 +242,12 @@ module.exports = {
               ),
 
               plugins: [
-                [require.resolve("babel-plugin-graphql-tag")],
+                [
+                  require.resolve("babel-plugin-graphql-tag"),
+                  {
+                    artifactDirectory: "./src/__generated__"
+                  }
+                ],
                 [
                   require.resolve("babel-plugin-import"),
                   {
@@ -412,7 +416,7 @@ module.exports = {
     new BundleAnalyzerPlugin(),
     new ManifestPlugin({
       fileName: "asset-manifest.json",
-      publicPath: publicPath
+      publicPath
     }),
     // TypeScript type checking
     useTypeScript &&

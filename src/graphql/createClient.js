@@ -10,7 +10,7 @@ import { getAuthorizationToken } from "../utils/authentication";
 const token = getAuthorizationToken();
 
 const options = {
-  uri: "http://localhost:3000/graphql",
+  uri: `${process.env.REACT_APP_API_URL}/graphql`,
   credentials: "include",
   headers: {
     Authorization: token ? `Bearer ${token}` : ""
@@ -26,9 +26,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     );
 
   if (networkError) {
-    window.g_app._store.dispatch({
-      type: "login/logout"
-    });
+    console.log(networkError);
   }
 });
 

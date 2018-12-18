@@ -13,7 +13,6 @@
 // }
 
 import * as React from "react";
-import { polyfill } from "react-lifecycles-compat";
 import classNames from "classnames";
 import * as PropTypes from "prop-types";
 import { Icon } from "antd";
@@ -100,7 +99,7 @@ class Sider extends React.Component<SiderProps, SiderState> {
 
   context: any;
 
-  private mql: MediaQueryList;
+  private mql!: MediaQueryList;
   private uniqueId: string;
 
   constructor(props: SiderProps) {
@@ -260,5 +259,4 @@ class Sider extends React.Component<SiderProps, SiderState> {
     );
   }
 }
-polyfill(Sider);
 export default Sider;

@@ -1,7 +1,6 @@
-import styled from "../../styles";
-import { FunctionComponent } from "react";
+import styles from "../../styles";
 
-export const InputRow = styled.div`
+export const InputRow = styles.div`
   margin: 0 2px 24px;
   position: relative;
   height: auto;
@@ -10,7 +9,7 @@ export const InputRow = styled.div`
   box-sizing: border-box;
 `;
 
-export const InputWrapper = styled.div`
+export const InputWrapper = styles.div`
   font-size: 14px;
   line-height: 1.5;
   color: rgba(0, 0, 0, 0.65);
@@ -23,7 +22,7 @@ export const InputWrapper = styled.div`
   width: 100%;
 `;
 
-export const Input = styled.input`
+export const Input = styles.input`
   box-sizing: border-box;
   list-style: none;
   position: relative;
@@ -41,13 +40,13 @@ export const Input = styled.input`
   transition: all 0.3s;
 `;
 
-export const LargeInput = styled(Input)`
+export const LargeInput = styles(Input)`
   padding: 6px 11px;
   height: 40px;
   font-size: 16px;
 `;
 
-export const InputError = styled.span`
+export const InputError = styles.span`
   color: #ffffff;
   background-color: #d32f2f;
   position: absolute;

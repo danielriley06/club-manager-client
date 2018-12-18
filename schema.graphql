@@ -1,0 +1,127 @@
+# Data of a age group
+type AgeGroup implements Node {
+  id: ID!
+  maxAge: Int
+  title: String!
+}
+
+# Data of a club
+type Club implements Node {
+  id: ID!
+  name: String!
+}
+
+# Data of a division
+type Division implements Node {
+  ancestry: String
+  children: [Division!]
+  description: String
+  id: ID!
+  name: String!
+}
+
+enum GenderEnum {
+  # A human that identifies as a female
+  female
+
+  # A human that identifies as a male
+  male
+
+  # Gender has not been provided
+  not_specified
+
+  # Catchall for all those other fluid genders
+  other
+}
+
+# An ISO 8601-encoded datetime
+scalar ISO8601DateTime
+
+# An object with an ID.
+interface Node {
+  # ID of the object.
+  id: ID!
+}
+
+type Query {
+  # returns the queried user
+  currentUser: User!
+  divisionAncestors(id: ID!): [Division!]
+  divisionChildren(id: ID!): [Division!]
+  divisions: [Division!]
+
+  # Fetches an object given its ID.
+  node(
+    # ID of the object.
+    id: ID!
+  ): Node
+
+  # Fetches a list of objects given a list of IDs.
+  nodes(
+    # IDs of the objects.
+    ids: [ID!]!
+  ): [Node]!
+  teams(page: Int!): [Team!]
+  teamsTotal: Int!
+  users(page: Int!): [User!]
+  usersCount: Int!
+}
+
+# Data of a season
+type Season implements Node {
+  active: Boolean!
+  endDate: ISO8601DateTime
+  id: ID!
+  name: String!
+  startDate: ISO8601DateTime
+}
+
+# Data of a team
+type Team implements Node {
+  ageGroup: AgeGroup
+  club: Club
+  division: Division
+  gender: TeamGenderEnum
+  id: ID!
+  level: String
+  members: [User!]
+  name: String!
+  season: Season
+  timeZone: String
+  zipCode: String
+}
+
+enum TeamGenderEnum {
+  # A team consisting of all the genders
+  coed
+
+  # A team consisting solely of females
+  female
+
+  # A team consisting solely of males
+  male
+}
+
+# Data of a user
+type User implements Node {
+  active: Boolean!
+  avatarLink: String
+  cellphone: String
+  cellphoneVerified: Boolean!
+  clubRole: String!
+  createdAt: ISO8601DateTime!
+  dateOfBirth: ISO8601DateTime
+  email: String!
+  emailVerified: Boolean!
+  firstName: String!
+  gender: GenderEnum!
+  id: ID!
+  inviteAccepted: Boolean!
+  invitedToDashboard: Boolean!
+  isClubOwner: Boolean!
+  lastName: String!
+  middleName: String
+  notify: Boolean!
+  teams: [Team!]
+  updatedAt: ISO8601DateTime!
+}

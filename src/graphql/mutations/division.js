@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 import divisionFragment from "../fragments/division";
 
-export const CREATE_DIVISION = gql`
+const CREATE_DIVISION = gql`
   mutation createDivision(
     $parentId: String
     $name: String!
@@ -19,3 +19,5 @@ export const CREATE_DIVISION = gql`
   }
   ${divisionFragment}
 `;
+
+export default CREATE_DIVISION;

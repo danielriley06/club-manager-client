@@ -1,49 +1,44 @@
-import jwtDecode from "jwt-decode";
+import * as JWT from "jwt-decode";
 
-interface Authority {
-  [position: number]: string;
-}
-
-export interface Token {
+export interface IToken {
   user_id: number;
   sub: number;
-  authorization: Array<string>;
+  authorization: string[];
   type: string;
   exp: number;
 }
 
-const localStorageTokenName: string = process.env.REACT_APP_TOKEN_STORAGE_NAME;
+const localStorageTokenName: string =
+  process.env.REACT_APP_TOKEN_STORAGE_NAME || "club-manager";
 
 export function setAuthorizationToken(token: string): void {
   return localStorage.setItem(localStorageTokenName, token);
 }
 
-export function getAuthorizationToken(): string {
-  const token: string = localStorage.getItem(localStorageTokenName);
-  return token || null;
+export function getAuthorizationToken(): string | undefined {
+  const token = localStorage.getItem(localStorageTokenName) || undefined;
+  return token;
 }
 
-export function userIsLoggedIn(token?: string): boolean {
-  const encryptedToken: string =
-    typeof token === "undefined" ? getAuthorizationToken() : token;
+export function userIsLoggedIn(): boolean {
+  const encryptedToken: string | undefined = getAuthorizationToken();
   let isAuthorized: boolean = false;
   try {
     isAuthorized = authorizationTokenIsEffective(encryptedToken);
   } catch (e) {
     isAuthorized = false;
   }
-  console.log("triggered!", isAuthorized);
   return isAuthorized;
 }
 
-export function authorizationTokenIsEffective(
-  encryptedToken?: string
-): boolean {
+export function authorizationTokenIsEffective(token?: string): boolean {
   let isEffective: boolean = false;
+  if (typeof token === "undefined") {
+    return isEffective;
+  }
   try {
-    const decodedToken: Token = jwtDecode(encryptedToken);
+    const decodedToken: IToken = JWT(token);
     const currentTime = new Date().getTime() / 1000;
-    console.log("HERE YA FUCK", decodedToken);
     if (currentTime < decodedToken.exp) {
       return true;
     }
@@ -51,17 +46,4 @@ export function authorizationTokenIsEffective(
     isEffective = false;
   }
   return isEffective;
-}
-
-export function getUserAuthority(token?: string): Authority {
-  const authorityString =
-    typeof token === "undefined" ? getAuthorizationToken() : token;
-  let authority: Array<string> = [];
-  try {
-    const decodedToken: Token = jwtDecode(authorityString);
-    authority = decodedToken.authorization;
-  } catch (e) {
-    authority = [];
-  }
-  return authority;
 }

@@ -1,25 +1,25 @@
+import get from "lodash/get";
 import * as React from "react";
-import { State } from "router5";
-import { Link, routeNode } from "react-router5";
+import { InjectedRouterNode, Link, routeNode } from "react-router5";
 
+import Login from "../../pages/User/Login";
 import {
   Container,
   Content,
-  Top,
   Header,
-  Title,
+  Language,
   StyledLogo,
-  Language
+  Title,
+  Top
 } from "./styles";
-import Login from "../../pages/User/Login";
 
-export interface UserProps {
-  route?: State;
-}
+export interface IUserProps extends InjectedRouterNode {}
 
-class User extends React.Component<UserProps, any> {
-  renderRoute = () => {
-    const childRouteName = this.props.route.name.split(".")[1];
+class User extends React.Component<IUserProps, any> {
+  public renderRoute = () => {
+    const { route } = this.props;
+    const routeName = get(route, "name", "");
+    const childRouteName = routeName.split(".")[1];
     switch (childRouteName) {
       case "login": {
         return <Login />;
@@ -50,4 +50,4 @@ class User extends React.Component<UserProps, any> {
   }
 }
 
-export default routeNode("user")(User);
+export default routeNode<IUserProps>("user")(User);

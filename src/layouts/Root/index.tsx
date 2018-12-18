@@ -1,6 +1,5 @@
 import * as React from "react";
-import { routeNode } from "react-router5";
-import { State } from "router5";
+import { InjectedRouterNode, routeNode } from "react-router5";
 
 import { createGlobalStyle } from "../../styles";
 import Dashboard from "../Dashboard";
@@ -10,6 +9,7 @@ import { RootWrapper } from "./styles";
 const GlobalStyle = createGlobalStyle`
   * {
     box-sizing: border-box;
+    text-rendering: optimizelegibility;
   }
 
   body {
@@ -18,10 +18,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   input[type=text], textarea {
-    -webkit-transition: all 0.30s ease-in-out;
-    -moz-transition: all 0.30s ease-in-out;
-    -ms-transition: all 0.30s ease-in-out;
-    -o-transition: all 0.30s ease-in-out;
+    transition: all 0.30s ease-in-out;
     outline: none;
     border: 1px solid #DDDDDD;
   }
@@ -42,16 +39,13 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-export interface RootLayoutProps {
-  route: State;
-  router: any;
+export interface IRootLayoutProps extends InjectedRouterNode {
+  children?: React.ReactNode;
 }
 
-export interface RootLayoutState {}
-
-class Root extends React.Component<RootLayoutProps> {
-  renderRouteNode = () => {
-    const topRouteName = this.props.route.name.split(".")[0];
+class Root extends React.Component<IRootLayoutProps> {
+  public renderRouteNode = () => {
+    const topRouteName = this.props.route!.name.split(".")[0];
     switch (topRouteName) {
       case "user": {
         return <User />;
@@ -65,7 +59,7 @@ class Root extends React.Component<RootLayoutProps> {
     }
   };
 
-  render() {
+  public render() {
     return (
       <RootWrapper>
         <GlobalStyle />
@@ -75,4 +69,4 @@ class Root extends React.Component<RootLayoutProps> {
   }
 }
 
-export default routeNode("")(Root);
+export default routeNode<IRootLayoutProps>("root")(Root);

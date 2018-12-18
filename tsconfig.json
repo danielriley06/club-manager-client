@@ -1,24 +1,30 @@
 {
   "compilerOptions": {
-    "sourceMap": true,
-    "target": "esnext",
-    "lib": ["dom", "esnext"],
+    "strict": true,
     "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": false,
+    "baseUrl": ".",
     "forceConsistentCasingInFileNames": true,
-    "module": "es6",
+    "jsx": "react",
+    "lib": ["es7", "dom"],
+    "module": "es2015",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "noEmit": true,
+    "noImplicitAny": false,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "outDir": "build/dist",
+    "rootDir": "src",
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "target": "es2015",
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "jsx": "preserve",
-    "baseUrl": "./",
     "paths": {
       "*": ["node_modules/*", "src/typings/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules", "build"]
 }

@@ -1,7 +1,6 @@
-import * as React from "react";
 import Tabs, { TabsProps } from "antd/lib/tabs";
 
-import styled from "../../styles/index";
+import styled from "../../styles";
 import { media } from "../../styles/styleUtils";
 
 export const Main = styled.div`
