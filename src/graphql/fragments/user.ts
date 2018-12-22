@@ -8,11 +8,11 @@ const userFragment = gql`
     lastName
     clubRole
     email
-    cellphone
+    mobileNumber
+    mobileNumberVerified
     gender
     dateOfBirth
     active
-    cellphoneVerified
     emailVerified
     invitedToDashboard
     inviteAccepted
@@ -20,7 +20,10 @@ const userFragment = gql`
     createdAt
     updatedAt
     isClubOwner
-    notify
+    club {
+      id
+      name
+    }
     teams {
       id
       name

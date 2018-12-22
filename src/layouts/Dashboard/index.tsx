@@ -2,15 +2,18 @@ import { Layout } from "antd";
 import enquire from "enquire.js";
 import get from "lodash/get";
 import * as React from "react";
-import { InjectedRouterNode, routeNode } from "react-router5";
+import { RouteNode } from "react-router5";
+import { State } from "router5";
 
 import { Query } from "react-apollo";
 import Logo from "../../assets/logo.svg";
 import GlobalHeader from "../../components/GlobalHeader";
+import LoadingIndicator from "../../components/LoadingIndicator";
 import SiderMenuWrapper from "../../components/SiderMenu";
 import { CURRENT_USER_QUERY } from "../../graphql/queries/user";
 import Directory from "../../pages/Directory";
 import DivisionList from "../../pages/Divisions";
+import SeasonsList from "../../pages/Seasons";
 import Teams from "../../pages/Teams";
 import styled from "../../styles/index";
 
@@ -21,6 +24,16 @@ export const StyledLogo = styled(Logo)`
   vertical-align: top;
   margin-bottom: 16px;
 `;
+
+export interface IDashboardProps {
+  route: State;
+}
+
+export interface IDashboardState {
+  rendering: boolean;
+  isMobile: boolean;
+  collapsed: boolean;
+}
 
 class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
   public renderRef;
@@ -62,7 +75,6 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
   }
 
   public onCollapse = (): void => {
-    console.log("oh hi!");
     this.setState(state => ({
       collapsed: !state.collapsed
     }));
@@ -95,6 +107,10 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
       return <DivisionList />;
     }
 
+    if (childRouteName === "seasons") {
+      return <SeasonsList />;
+    }
+
     return <div>Well Shit</div>;
   };
 
@@ -104,9 +120,13 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     return (
       <Query query={CURRENT_USER_QUERY}>
         {({ loading, error, data }) => {
-          if (loading) return <p>Loading...</p>;
-          if (error) return <p>Error :(</p>;
-
+          if (loading) {
+            return <LoadingIndicator />;
+          }
+          if (error) {
+            return <p>Error :(</p>;
+          }
+          const { currentUser } = data;
           return (
             <Layout>
               <SiderMenuWrapper
@@ -126,10 +146,12 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
                   onCollapse={this.onCollapse}
                   collapsed={collapsed}
                   logo={StyledLogo}
+                  currentUser={currentUser}
+                  {...this.props}
                 />
                 <Content
                   style={{
-                    margin: "24px 24px 0"
+                    margin: "24px"
                   }}
                 >
                   {this.renderRoutes()}
@@ -143,12 +165,8 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
   }
 }
 
-export interface IDashboardProps extends InjectedRouterNode {}
-
-export interface IDashboardState {
-  rendering: boolean;
-  isMobile: boolean;
-  collapsed: boolean;
-}
-
-export default routeNode<IDashboardProps>("dashboard")(Dashboard);
+export default props => (
+  <RouteNode nodeName="dashboard">
+    {({ route }) => <Dashboard route={route} {...props} />}
+  </RouteNode>
+);

@@ -5,10 +5,12 @@ const divisionFragment = gql`
     id
     name
     ancestry
+    ancestorName
     children {
       id
       name
       ancestry
+      ancestorName
     }
   }
 `;

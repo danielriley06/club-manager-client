@@ -1,5 +1,6 @@
 import * as React from "react";
-import { InjectedRouterNode, routeNode } from "react-router5";
+import { RouteNode } from "react-router5";
+import { State } from "router5";
 
 import { createGlobalStyle } from "../../styles";
 import Dashboard from "../Dashboard";
@@ -15,6 +16,9 @@ const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
+    font-family: 'Open Sans', sans-serif !important;
+    width: 100%;
+    height: 100%;
   }
 
   input[type=text], textarea {
@@ -37,36 +41,63 @@ const GlobalStyle = createGlobalStyle`
   &::placeholder {
     color: #a3b1bf;
   }
+
+  .ant-layout {
+    min-height: 100vh;
+  }
+
+  .ant-card {
+    box-shadow: 0 2px 4px 0 rgba(50,50,93,.1);
+    border-radius: 4px;
+  }
+
+  .ant-card-bordered {
+    border: none;
+  }
+
+  .ant-menu.ant-menu-dark .ant-menu-item-selected, .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
+    background-color: transparent;
+    border-right: 6px solid #1890ff;
+    font-weight: bold !important;
+  }
+
+  .ant-table-thead > tr > th {
+    background: #fff;
+  }
 `;
 
-export interface IRootLayoutProps extends InjectedRouterNode {
+export interface IRootLayoutProps {
   children?: React.ReactNode;
+  route: State;
 }
 
-class Root extends React.Component<IRootLayoutProps> {
-  public renderRouteNode = () => {
-    const topRouteName = this.props.route!.name.split(".")[0];
-    switch (topRouteName) {
-      case "user": {
-        return <User />;
-      }
-      case "dashboard": {
-        return <Dashboard />;
-      }
-      default: {
-        return <div>FUCK ME</div>;
-      }
+const Root = ({ route }) => {
+  const topRouteName = route.name.split(".")[0];
+  switch (topRouteName) {
+    case "user": {
+      return (
+        <RootWrapper>
+          <GlobalStyle />
+          <User />
+        </RootWrapper>
+      );
     }
-  };
-
-  public render() {
-    return (
-      <RootWrapper>
-        <GlobalStyle />
-        {this.renderRouteNode()}
-      </RootWrapper>
-    );
+    case "dashboard": {
+      return (
+        <RootWrapper>
+          <GlobalStyle />
+          <Dashboard />
+        </RootWrapper>
+      );
+    }
+    default: {
+      return <div>FUCK ME</div>;
+    }
   }
-}
+};
 
-export default routeNode<IRootLayoutProps>("root")(Root);
+export default props => (
+  <RouteNode nodeName="">
+    {({ route }) => <Root route={route} {...props} />}
+  </RouteNode>
+);

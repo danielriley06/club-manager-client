@@ -3,18 +3,13 @@ import get from "lodash/get";
 import React, { Component } from "react";
 import styled from "styled-components";
 
+import { IDivision } from "../../types/types";
+
 const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   color: rgba(0, 0, 0, 0.85);
 `;
-
-export interface IDivision {
-  id: number;
-  name: string;
-  ancestry: string[];
-  children: object;
-}
 
 export interface IDivisionPanelHeader {
   division: IDivision;

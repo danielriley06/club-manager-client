@@ -8,15 +8,22 @@ import {
   FormikProps
 } from "formik";
 import ky from "ky";
+import delay from "lodash/delay";
 import get from "lodash/get";
 import * as React from "react";
-import { InjectedRouterNode, withRoute } from "react-router5";
+import { Route } from "react-router5";
+import { Router } from "router5";
 
 import { Button } from "antd";
-import { setAuthorizationToken } from "../../utils/authentication";
+import {
+  getAuthorizationToken,
+  setAuthorizationToken
+} from "../../utils/authentication";
 import { InputError, InputRow, InputWrapper, LargeInput } from "./styles";
 
-export interface ILoginProps extends InjectedRouterNode {}
+export interface ILoginProps {
+  router: Router;
+}
 
 interface ILoginFormValues {
   auth: {
@@ -54,7 +61,13 @@ class EmailLogin extends React.Component<ILoginProps, any> {
     if (request.status === 201) {
       const response = await request.json();
       setAuthorizationToken(response.jwt);
-      router.navigate("dashboard");
+      delay(() => {
+        const token = getAuthorizationToken();
+        console.log("dafuq?", token);
+        actions.setSubmitting(false);
+        router.navigate("dashboard.directory", {}, { reload: true });
+        return;
+      }, 1000);
     }
     actions.setSubmitting(false);
     actions.setErrors({
@@ -138,4 +151,6 @@ class EmailLogin extends React.Component<ILoginProps, any> {
   }
 }
 
-export default withRoute(EmailLogin);
+export default () => (
+  <Route>{({ router }) => <EmailLogin router={router} />}</Route>
+);

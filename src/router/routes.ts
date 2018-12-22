@@ -1,11 +1,7 @@
-import { DoneFn, Route, State } from "router5";
+import { Route, State } from "router5";
 import { userIsLoggedIn } from "../utils/authentication";
 
-export const loggedInRequired = () => (
-  toState: State,
-  fromState: State,
-  done: DoneFn
-) => {
+export const loggedInRequired = () => (toState: State, fromState: State) => {
   if (userIsLoggedIn()) {
     return true;
   }
@@ -14,8 +10,7 @@ export const loggedInRequired = () => (
 
 export const authenticationRequired = () => (
   toState: State,
-  fromState: State,
-  done: DoneFn
+  fromState: State
 ) => {
   if (!userIsLoggedIn()) {
     return true;
@@ -41,7 +36,8 @@ export const routes: Route[] = [
     children: [
       { name: "directory", path: "/directory", canActivate: loggedInRequired },
       { name: "teams", path: "/teams", canActivate: loggedInRequired },
-      { name: "divisions", path: "/divisions", canActivate: loggedInRequired }
+      { name: "divisions", path: "/divisions", canActivate: loggedInRequired },
+      { name: "seasons", path: "/seasons", canActivate: loggedInRequired }
     ],
     forwardTo: "dashboard.directory",
     name: "dashboard",

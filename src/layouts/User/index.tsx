@@ -1,6 +1,7 @@
 import get from "lodash/get";
 import * as React from "react";
-import { InjectedRouterNode, Link, routeNode } from "react-router5";
+import { Link, RouteNode } from "react-router5";
+import { State } from "router5";
 
 import Login from "../../pages/User/Login";
 import {
@@ -13,7 +14,9 @@ import {
   Top
 } from "./styles";
 
-export interface IUserProps extends InjectedRouterNode {}
+export interface IUserProps {
+  route: State;
+}
 
 class User extends React.Component<IUserProps, any> {
   public renderRoute = () => {
@@ -50,4 +53,8 @@ class User extends React.Component<IUserProps, any> {
   }
 }
 
-export default routeNode<IUserProps>("user")(User);
+export default props => (
+  <RouteNode nodeName="user">
+    {({ route }) => <User route={route} {...props} />}
+  </RouteNode>
+);

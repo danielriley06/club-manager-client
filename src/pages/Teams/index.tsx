@@ -1,55 +1,59 @@
 import * as React from "react";
-import { Query } from "react-apollo";
+import { Mutation, Query } from "react-apollo";
 
 import {
   Avatar,
   Button,
   Card,
-  DatePicker,
   Dropdown,
-  Form,
   Icon,
   Input,
   List,
   Menu,
-  Modal,
-  Radio,
-  Select,
-  Switch
+  Modal
 } from "antd";
-import { FormComponentProps } from "antd/lib/form";
 import get from "lodash/get";
 
+import DivisionSelect from "../../components/DivisionSelect";
+import TeamForm from "../../components/TeamForm";
+import CREATE_TEAM from "../../graphql/mutations/team";
 import GET_TEAMS from "../../graphql/queries/team";
 import styles from "./DirectoryList.less";
 
-const FormItem = Form.Item;
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
-const SelectOption = Select.Option;
 const { Search } = Input;
 
-export interface ITeamsProps extends FormComponentProps {}
+export interface ITeamsProps {}
 
 export interface ITeamsState {
   visible: boolean;
   done: boolean;
   contactType: string;
-  current?: object;
+  current: object;
 }
 
 class Teams extends React.Component<ITeamsProps, ITeamsState> {
-  public state = { visible: false, done: false, contactType: "email" };
+  public state = {
+    visible: false,
+    done: false,
+    contactType: "email",
+    current: {}
+  };
 
   public formLayout = {
     labelCol: { span: 7 },
     wrapperCol: { span: 13 }
   };
 
+  public formRef;
+
+  public saveFormRef = formRef => {
+    this.formRef = formRef;
+  };
+
   public showModal = () => {
     this.setState({
       visible: true,
-      current: undefined
+      current: {}
     });
   };
 
@@ -73,38 +77,36 @@ class Teams extends React.Component<ITeamsProps, ITeamsState> {
     });
   };
 
-  public handleSubmit = e => {
-    e.preventDefault();
-    const { form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      this.setState({
-        done: true
-      });
-      console.log({ ...fieldsValue });
-    });
-  };
-
   public setContactType = value => {
     this.setState({
       contactType: value
     });
   };
 
-  public render() {
-    const {
-      form: { getFieldDecorator }
-    } = this.props;
-    const { visible, done, contactType } = this.state;
+  public onSelectChange = value => {
+    console.log(value);
+  };
 
-    const modalFooter = done
-      ? { footer: null, onCancel: this.handleDone }
-      : {
-          okText: "Save",
-          onOk: this.handleSubmit,
-          onCancel: this.handleCancel
-        };
+  public handleSubmit = e => {
+    e.preventDefault();
+    const { form, createTeam } = this.formRef.props;
+
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+      console.log({ ...fieldsValue });
+      createTeam({
+        variables: {
+          ...fieldsValue
+        }
+      });
+      this.setState({
+        done: true
+      });
+    });
+  };
+
+  public render() {
+    const { visible, done, current } = this.state;
 
     const DirectoryAvatar = ({ item: { name } }) => {
       return (
@@ -116,12 +118,11 @@ class Teams extends React.Component<ITeamsProps, ITeamsState> {
 
     const extraContent = (
       <div className={styles.extraContent}>
-        <RadioGroup defaultValue="all">
-          <RadioButton value="all">All</RadioButton>
-          <RadioButton value="staff">Staff</RadioButton>
-          <RadioButton value="players">Players</RadioButton>
-          <RadioButton value="other">Other</RadioButton>
-        </RadioGroup>
+        <DivisionSelect
+          onChange={this.onSelectChange}
+          mode="multiple"
+          placeholder="Filter by 1 or more divisions"
+        />
         <Search
           className={styles.extraContentSearch}
           placeholder="Search"
@@ -145,89 +146,6 @@ class Teams extends React.Component<ITeamsProps, ITeamsState> {
           Options <Icon type="down" />
         </a>
       </Dropdown>
-    );
-
-    const prefixSelector = (
-      <Select
-        style={{ width: 70 }}
-        onChange={this.setContactType}
-        dropdownMatchSelectWidth={false}
-        placeholder="Type"
-      >
-        <SelectOption value="email">Email</SelectOption>
-        <SelectOption value="cellphone">Cellphone</SelectOption>
-      </Select>
-    );
-
-    const getModalContent = () => (
-      <Form onSubmit={this.handleSubmit}>
-        <FormItem label="First Name" {...this.formLayout}>
-          {getFieldDecorator("firstName", {
-            rules: [{ required: true, message: "First Name is required" }]
-          })(<Input placeholder="e.g. Bobby" />)}
-        </FormItem>
-        <FormItem label="Last Name" {...this.formLayout}>
-          {getFieldDecorator("lastName", {
-            rules: [{ required: true, message: "Last Name is required" }]
-          })(<Input placeholder="e.g. Jones" />)}
-        </FormItem>
-        <FormItem label="Contact" {...this.formLayout}>
-          {getFieldDecorator(contactType, {
-            rules: [{ required: true, message: "Email is required" }]
-          })(<Input addonBefore={prefixSelector} placeholder="Email" />)}
-        </FormItem>
-        <FormItem label="Club Role" {...this.formLayout}>
-          {getFieldDecorator("clubRole", {
-            rules: [{ required: true, message: "Club role is required" }]
-          })(
-            <Select placeholder="Select a role...">
-              <SelectOption value="player">Player</SelectOption>
-              <SelectOption value="staff">Staff</SelectOption>
-              <SelectOption value="guardian">Parent/Guardian</SelectOption>
-            </Select>
-          )}
-        </FormItem>
-        <FormItem label="Gender" {...this.formLayout}>
-          {getFieldDecorator("gender", {
-            rules: [
-              {
-                required: true,
-                message: "Gender is required"
-              }
-            ]
-          })(
-            <Select placeholder="Select a gender...">
-              <SelectOption value="male">Male</SelectOption>
-              <SelectOption value="female">Female</SelectOption>
-              <SelectOption value="other">Other</SelectOption>
-            </Select>
-          )}
-        </FormItem>
-        <FormItem label="Select a date of birth..." {...this.formLayout}>
-          {getFieldDecorator("dateOfBirth")(
-            <DatePicker
-              showTime={true}
-              placeholder="01-01-1990"
-              format="MM-DD-YYYY"
-              style={{ width: "100%" }}
-            />
-          )}
-        </FormItem>
-        <FormItem {...this.formLayout} label="Assigned Teams">
-          {getFieldDecorator("select-multiple")(
-            <Select mode="multiple" placeholder="Select one or more teams">
-              <SelectOption value="red">Red</SelectOption>
-              <SelectOption value="green">Green</SelectOption>
-              <SelectOption value="blue">Blue</SelectOption>
-            </Select>
-          )}
-        </FormItem>
-        <FormItem {...this.formLayout} label="Invite to Dashboard?">
-          {getFieldDecorator("switch", { valuePropName: "checked" })(
-            <Switch />
-          )}
-        </FormItem>
-      </Form>
     );
 
     return (
@@ -266,48 +184,64 @@ class Teams extends React.Component<ITeamsProps, ITeamsState> {
                       total
                     }}
                     dataSource={teams}
-                    renderItem={team => (
-                      <List.Item
-                        key={`${team.id}-listItem`}
-                        actions={[
-                          <a
-                            key={`${team.id}-listItemteamEdit`}
-                            onClick={e => {
-                              e.preventDefault();
-                              this.showEditModal(team);
-                            }}
-                          >
-                            Edit
-                          </a>,
-                          <MoreBtn
-                            current={team}
-                            key={`${team.id}-listItemMoreBtn`}
+                    renderItem={team => {
+                      const { division } = team;
+                      const divisionName = get(division, "name", "Unassigned");
+                      const ancestorName = get(division, "ancestorName");
+                      return (
+                        <List.Item
+                          key={`${team.id}-listItem`}
+                          actions={[
+                            <a
+                              key={`${team.id}-listItemteamEdit`}
+                              onClick={e => {
+                                e.preventDefault();
+                                this.showEditModal(team);
+                              }}
+                            >
+                              Edit
+                            </a>,
+                            <MoreBtn
+                              current={team}
+                              key={`${team.id}-listItemMoreBtn`}
+                            />
+                          ]}
+                        >
+                          <List.Item.Meta
+                            avatar={<DirectoryAvatar item={team} />}
+                            title={<a href={team.href}>{team.name}</a>}
+                            description={`${
+                              ancestorName ? `${ancestorName} => ` : ""
+                            }${divisionName}`}
                           />
-                        ]}
-                      >
-                        <List.Item.Meta
-                          avatar={<DirectoryAvatar item={team} />}
-                          title={<a href={team.href}>{team.name}</a>}
-                          description={get(team, "division.name", "Unassigned")}
-                        />
-                        <ListContent />
-                      </List.Item>
-                    )}
+                          <ListContent />
+                        </List.Item>
+                      );
+                    }}
                   />
                 </Card>
               </div>
               <Modal
-                title="Create Account"
+                title="Create Team"
                 className={styles.standardListForm}
                 width={640}
+                onCancel={this.handleCancel}
+                onOk={this.handleSubmit}
                 bodyStyle={
                   done ? { padding: "72px 0" } : { padding: "28px 0 0" }
                 }
                 destroyOnClose={true}
                 visible={visible}
-                {...modalFooter}
               >
-                {getModalContent()}
+                <Mutation mutation={CREATE_TEAM}>
+                  {(createTeam, { data }) => (
+                    <TeamForm
+                      currentTeam={current}
+                      wrappedComponentRef={this.saveFormRef}
+                      createTeam={createTeam}
+                    />
+                  )}
+                </Mutation>
               </Modal>
             </div>
           );
@@ -317,4 +251,4 @@ class Teams extends React.Component<ITeamsProps, ITeamsState> {
   }
 }
 
-export default Form.create()(Teams);
+export default Teams;

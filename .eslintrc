@@ -9,6 +9,7 @@
   ],
   "plugins": ["prettier", "jest", "unicorn"],
   "parserOptions": {
+    "ecmaVersion": 2018,
     "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
@@ -17,7 +18,9 @@
   "env": {
     "es6": true,
     "browser": true,
-    "jest": true
+    "commonjs": true,
+    "jest": true,
+    "node": true
   },
   "rules": {
     "react/jsx-filename-extension": "off",
@@ -25,7 +28,8 @@
     "import/extensions": { "ts": "never", "tsx": "never" },
     "no-use-before-define": "warn",
     "no-param-reassign": "warn",
-    "no-underscore-dangle": ["warn", { "allow": ["_store"] }]
+    "no-underscore-dangle": ["warn", { "allow": ["_store"] }],
+    "no-unused-vars": ["error", { "ignoreRestSiblings": true }]
   },
   "settings": {
     "import/resolver": {
@@ -37,10 +41,7 @@
   "overrides": [
     {
       "files": ["**/*.ts", "**/*.tsx"],
-      "parser": "typescript-eslint-parser",
-      "rules": {
-        "no-undef": "off"
-      }
+      "parser": "typescript-eslint-parser"
     }
   ]
 }

@@ -1,4 +1,4 @@
-import * as JWT from "jwt-decode";
+import JwtDecode from "jwt-decode";
 
 export interface IToken {
   user_id: number;
@@ -37,7 +37,7 @@ export function authorizationTokenIsEffective(token?: string): boolean {
     return isEffective;
   }
   try {
-    const decodedToken: IToken = JWT(token);
+    const decodedToken: IToken = JwtDecode(token);
     const currentTime = new Date().getTime() / 1000;
     if (currentTime < decodedToken.exp) {
       return true;

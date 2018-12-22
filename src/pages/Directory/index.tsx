@@ -118,6 +118,14 @@ class Directory extends React.PureComponent<IDirectoryProps> {
           placeholder="Search"
           onSearch={() => ({})}
         />
+        <Button
+          type="primary"
+          style={{ marginBottom: 8, float: "right" }}
+          icon="plus"
+          onClick={this.showModal}
+        >
+          Create
+        </Button>
       </div>
     );
 
@@ -214,19 +222,10 @@ class Directory extends React.PureComponent<IDirectoryProps> {
           <Card
             className={styles.listCard}
             bordered={false}
-            title="Directory"
             style={{ marginTop: 24 }}
             bodyStyle={{ padding: "0 32px 40px 32px" }}
             extra={extraContent}
           >
-            <Button
-              type="dashed"
-              style={{ width: "100%", marginBottom: 8 }}
-              icon="plus"
-              onClick={this.showModal}
-            >
-              Create
-            </Button>
             <Query
               query={USERS_QUERY}
               variables={{

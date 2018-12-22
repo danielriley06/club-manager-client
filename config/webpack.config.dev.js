@@ -15,6 +15,7 @@ const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin-alt")
 const typescriptFormatter = require("react-dev-utils/typescriptFormatter");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
+const DashboardPlugin = require("webpack-dashboard/plugin");
 const paths = require("./paths");
 const getClientEnvironment = require("./env");
 
@@ -80,7 +81,9 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
 };
 
 const lessLoaderBase = getStyleLoaders({
-  importLoaders: 2
+  importLoaders: 2,
+  modules: true,
+  getLocalIdent: getCSSModuleLocalIdent
 });
 
 // This is the development configuration.
@@ -248,14 +251,6 @@ module.exports = {
                     artifactDirectory: "./src/__generated__"
                   }
                 ],
-                [
-                  require.resolve("babel-plugin-import"),
-                  {
-                    libraryName: "antd",
-                    libraryDirectory: "es",
-                    style: true
-                  }
-                ],
                 [require.resolve("babel-plugin-styled-components")]
               ],
               // This is a feature of `babel-loader` for webpack (not Babel itself).
@@ -341,14 +336,22 @@ module.exports = {
           },
           // Adds support for LESS
           {
-            test: lessRegex,
-            exclude: lessModuleRegex,
+            test: /\.less$/,
             use: [
-              ...lessLoaderBase,
+              {
+                loader: "style-loader"
+              },
+              {
+                loader: "css-loader",
+                options: {
+                  sourceMap: true,
+                  modules: true,
+                  getLocalIdent: getCSSModuleLocalIdent
+                }
+              },
               {
                 loader: "less-loader",
                 options: {
-                  sourceMap: true,
                   javascriptEnabled: true
                 }
               }
@@ -418,6 +421,7 @@ module.exports = {
       fileName: "asset-manifest.json",
       publicPath
     }),
+    new DashboardPlugin({ port: 7000 }),
     // TypeScript type checking
     useTypeScript &&
       new ForkTsCheckerWebpackPlugin({
