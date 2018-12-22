@@ -1,8 +1,8 @@
+import "antd/dist/antd.css";
 import * as React from "react";
 import { ApolloProvider } from "react-apollo";
 import * as ReactDOM from "react-dom";
 import { RouterProvider } from "react-router5";
-import "antd/dist/antd.css";
 
 import createClient from "./graphql/createClient";
 import Root from "./layouts/Root";

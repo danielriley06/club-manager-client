@@ -1,13 +1,52 @@
 import { Menu } from "antd";
-import React, { Component } from "react";
-import { FormattedMessage } from "umi/locale";
+import * as React from "react";
+import { withNamespaces, WithNamespaces } from "react-i18next";
 import router from "umi/router";
 import GridContent from "../../components/PageWrapper/GridContent";
+import { IUser } from "../../types/types";
 import styles from "./Info.less";
 
 const { Item } = Menu;
+const menuMap = {
+  base: (
+    <FormattedMessage
+      id="app.settings.menuMap.basic"
+      defaultMessage="Basic Settings"
+    />
+  ),
+  security: (
+    <FormattedMessage
+      id="app.settings.menuMap.security"
+      defaultMessage="Security Settings"
+    />
+  ),
+  binding: (
+    <FormattedMessage
+      id="app.settings.menuMap.binding"
+      defaultMessage="Account Binding"
+    />
+  ),
+  notification: (
+    <FormattedMessage
+      id="app.settings.menuMap.notification"
+      defaultMessage="New Message Notification"
+    />
+  )
+};
+const getMenuKey = (props: IAccountWrapperProps) =>
+  location.pathname.replace(`${props.match.path}/`, "");
 
-class Info extends Component {
+interface IAccountWrapperProps extends WithNamespaces {
+  currentUser: IUser;
+}
+
+interface IAccountWrapperState {
+  readonly mode: string;
+  readonly selectKey: string;
+  readonly menuMap: object;
+}
+
+class Info extends React.Component<IAccountWrapperProps, IAccountWrapperState> {
   public static getDerivedStateFromProps(props, state) {
     const { match, location } = props;
     let selectKey = location.pathname.replace(`${match.path}/`, "");
@@ -20,33 +59,7 @@ class Info extends Component {
   constructor(props) {
     super(props);
     const { match, location } = props;
-    const menuMap = {
-      base: (
-        <FormattedMessage
-          id="app.settings.menuMap.basic"
-          defaultMessage="Basic Settings"
-        />
-      ),
-      security: (
-        <FormattedMessage
-          id="app.settings.menuMap.security"
-          defaultMessage="Security Settings"
-        />
-      ),
-      binding: (
-        <FormattedMessage
-          id="app.settings.menuMap.binding"
-          defaultMessage="Account Binding"
-        />
-      ),
-      notification: (
-        <FormattedMessage
-          id="app.settings.menuMap.notification"
-          defaultMessage="New Message Notification"
-        />
-      )
-    };
-    const key = location.pathname.replace(`${match.path}/`, "");
+
     this.state = {
       mode: "inline",
       menuMap,
@@ -134,4 +147,4 @@ class Info extends Component {
   }
 }
 
-export default Info;
+export default withNamespaces()(Info);
