@@ -1,13 +1,14 @@
 export type Maybe<T> = T | null;
 
-export enum GenderEnum {
+/** Specifies the gender of a user */
+export enum Gender {
   NotSpecified = "not_specified",
   Male = "male",
   Female = "female",
   Other = "other"
 }
-
-export enum TeamGenderEnum {
+/** Specifies the gender of a team */
+export enum TeamGender {
   Male = "male",
   Female = "female",
   Coed = "coed"
@@ -410,7 +411,7 @@ export type TeamFragmentFragment = {
 
   level: Maybe<string>;
 
-  gender: Maybe<TeamGenderEnum>;
+  gender: Maybe<TeamGender>;
 
   zipCode: Maybe<string>;
 
@@ -492,7 +493,7 @@ export type UserFragmentFragment = {
 
   mobileNumberVerified: boolean;
 
-  gender: GenderEnum;
+  gender: Gender;
 
   dateOfBirth: Maybe<Iso8601DateTime>;
 
@@ -534,7 +535,7 @@ export type UserFragmentTeams = {
 
   level: Maybe<string>;
 
-  gender: Maybe<TeamGenderEnum>;
+  gender: Maybe<TeamGender>;
 
   zipCode: Maybe<string>;
 
