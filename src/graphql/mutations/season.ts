@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 import seasonFragment from "../fragments/season";
 
 const CREATE_SEASON = gql`
-  mutation createSeason(
+  mutation CreateSeason(
     $name: String!
     $startDate: String
     $endDate: String

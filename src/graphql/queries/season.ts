@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 
 export const SEASONS_QUERY = gql`
-  query getSeasons {
+  query GetSeasons {
     seasons {
       id
       name

@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 import teamFragment from "../fragments/team";
 
 const CREATE_TEAM = gql`
-  mutation createTeam(
+  mutation CreateTeam(
     $name: String!
     $seasonId: String!
     $divisionId: String!

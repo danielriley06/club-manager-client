@@ -1,0 +1,17 @@
+overwrite: true
+schema:
+  - http://localhost:3000/graphql:
+      headers:
+        Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NDU2NjUxOTEsInVzZXJfaWQiOjEsInN1YiI6MSwiYXV0aG9yaXphdGlvbiI6WyJhZG1pbiIsInVzZXIiXSwidHlwZSI6ImFjY291bnQifQ.ggyTdn2uRI5sA0gwjiTGJQAvB7Ixaq4ELqcRUDjJ7ZM"
+documents:
+  - "src/graphql/**/*.{ts,tsx}"
+  - "src/graphql/**/*.graphql"
+generates:
+  ./src/generated/components.tsx:
+    config:
+      noNamespaces: true
+    plugins:
+      - typescript-common:
+        interfacePrefix: "I"
+      - typescript-client
+      - typescript-react-apollo

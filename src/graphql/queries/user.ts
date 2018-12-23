@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 import userFragment from "../fragments/user";
 
 export const USERS_QUERY = gql`
-  query users($page: Int!) {
+  query GetUsers($page: Int!) {
     usersCount
     users(page: $page) {
       ...userFragment
@@ -13,7 +13,7 @@ export const USERS_QUERY = gql`
 `;
 
 export const CURRENT_USER_QUERY = gql`
-  query getCurrentUser {
+  query GetCurrentUser {
     currentUser {
       ...userFragment
     }

@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 
 export const AGE_GROUPS_QUERY = gql`
-  query getAgeGroups {
+  query GetAgeGroups {
     ageGroups {
       id
       title
