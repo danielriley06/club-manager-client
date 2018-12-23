@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Divider, Layout, Menu } from "antd";
 import get from "lodash/get";
 import * as React from "react";
+import { withNamespaces, WithNamespaces } from "react-i18next";
 import { Link } from "react-router5";
 import { State } from "router5";
 import styled from "../../styles";
@@ -23,7 +24,7 @@ const MenuOption = styled("span")`
   letter-spacing: 0.25px;
 `;
 
-export interface ISiderMenuProps {
+export interface ISiderMenuProps extends WithNamespaces {
   route: State | null;
   collapsed: boolean;
   onCollapse: () => void;
@@ -33,9 +34,9 @@ interface IMenuIcon {
   collapsed: boolean;
 }
 
-export default class SiderMenu extends React.Component<ISiderMenuProps, any> {
+class SiderMenu extends React.Component<ISiderMenuProps, any> {
   public render() {
-    const { collapsed, onCollapse, route } = this.props;
+    const { collapsed, onCollapse, route, t } = this.props;
     const currentRouteName = get(route, "name", "");
     return (
       <Sider
@@ -58,7 +59,10 @@ export default class SiderMenu extends React.Component<ISiderMenuProps, any> {
         <SiderLogo collapsed={collapsed} />
         <Divider style={{ background: "rgba(234, 238, 245, 0.08)" }} />
         <Menu theme="dark" mode="inline" selectedKeys={[currentRouteName]}>
-          <Menu.Item key="dashboard.directory" title="Directory">
+          <Menu.Item
+            key="dashboard.directory"
+            title={t("app.sider.directoryTitle")}
+          >
             <Link routeName="dashboard.directory">
               <FontAwesomeIcon
                 style={{ fontSize: "18px" }}
@@ -66,10 +70,12 @@ export default class SiderMenu extends React.Component<ISiderMenuProps, any> {
                 icon={faAddressCard}
                 fixedWidth={true}
               />
-              <MenuOption collapsed={collapsed}>Directory</MenuOption>
+              <MenuOption collapsed={collapsed}>
+                {t("app.sider.directoryTitle")}
+              </MenuOption>
             </Link>
           </Menu.Item>
-          <Menu.Item key="dashboard.teams" title="Teams">
+          <Menu.Item key="dashboard.teams" title={t("app.sider.teamsTitle")}>
             <Link routeName="dashboard.teams">
               <FontAwesomeIcon
                 style={{ fontSize: "18px" }}
@@ -77,10 +83,15 @@ export default class SiderMenu extends React.Component<ISiderMenuProps, any> {
                 icon={faUsers}
                 fixedWidth={true}
               />
-              <MenuOption collapsed={collapsed}>Teams</MenuOption>
+              <MenuOption collapsed={collapsed}>
+                {t("app.sider.teamsTitle")}
+              </MenuOption>
             </Link>
           </Menu.Item>
-          <Menu.Item key="dashboard.divisions" title="Divisions">
+          <Menu.Item
+            key="dashboard.divisions"
+            title={t("app.sider.divisionsTitle")}
+          >
             <Link routeName="dashboard.divisions">
               <FontAwesomeIcon
                 style={{ fontSize: "18px" }}
@@ -88,10 +99,15 @@ export default class SiderMenu extends React.Component<ISiderMenuProps, any> {
                 icon={faListAlt}
                 fixedWidth={true}
               />
-              <MenuOption collapsed={collapsed}>Divisions</MenuOption>
+              <MenuOption collapsed={collapsed}>
+                {t("app.sider.divisionsTitle")}
+              </MenuOption>
             </Link>
           </Menu.Item>
-          <Menu.Item key="dashboard.seasons" title="Seasons">
+          <Menu.Item
+            key="dashboard.seasons"
+            title={t("app.sider.seasonsTitle")}
+          >
             <Link routeName="dashboard.seasons">
               <FontAwesomeIcon
                 style={{ fontSize: "18px" }}
@@ -99,10 +115,15 @@ export default class SiderMenu extends React.Component<ISiderMenuProps, any> {
                 icon={faStopwatch}
                 fixedWidth={true}
               />
-              <MenuOption collapsed={collapsed}>Seasons</MenuOption>
+              <MenuOption collapsed={collapsed}>
+                {t("app.sider.seasonsTitle")}
+              </MenuOption>
             </Link>
           </Menu.Item>
-          <Menu.Item key="dashboard.registrations" title="Registrations">
+          <Menu.Item
+            key="dashboard.registrations"
+            title={t("app.sider.registrationsTitle")}
+          >
             <Link routeName="dashboard.registrations">
               <FontAwesomeIcon
                 style={{ fontSize: "18px" }}
@@ -110,7 +131,9 @@ export default class SiderMenu extends React.Component<ISiderMenuProps, any> {
                 icon={faSignature}
                 fixedWidth={true}
               />
-              <MenuOption collapsed={collapsed}>Registrations</MenuOption>
+              <MenuOption collapsed={collapsed}>
+                {t("app.sider.registrationsTitle")}
+              </MenuOption>
             </Link>
           </Menu.Item>
         </Menu>
@@ -118,3 +141,5 @@ export default class SiderMenu extends React.Component<ISiderMenuProps, any> {
     );
   }
 }
+
+export default withNamespaces("translation")(SiderMenu);

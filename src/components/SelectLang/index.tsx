@@ -5,11 +5,14 @@ import styles from "./index.less";
 
 interface ISelectLangProps {
   className: string;
+  onLanguageClick: (key: string) => void;
 }
 
 export default class SelectLang extends PureComponent<ISelectLangProps, any> {
   public changLang = ({ key }) => {
     console.log(key);
+    const { onLanguageClick } = this.props;
+    onLanguageClick(key);
   };
 
   public render() {
@@ -21,13 +24,13 @@ export default class SelectLang extends PureComponent<ISelectLangProps, any> {
         // selectedKeys={[selectedLang]}
         onClick={this.changLang}
       >
-        <Menu.Item key="en-US">
+        <Menu.Item key="en">
           <span role="img" aria-label="English">
             🇺🇸
           </span>{" "}
           English
         </Menu.Item>
-        <Menu.Item key="pt-BR">
+        <Menu.Item key="es">
           <span role="img" aria-label="Spanish">
             🇲🇽
           </span>{" "}

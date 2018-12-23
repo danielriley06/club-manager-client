@@ -1,28 +1,28 @@
-const en = {
+const es = {
   translation: {
     app: {
       header: {
-        greeting: "Hello",
-        logOutButton: "Log Out",
-        accountSettingsButton: " Account Settings"
+        greeting: "Hola",
+        logOutButton: "Cerrar sesión",
+        accountSettingsButton: "Configuraciones"
       },
       sider: {
-        directoryTitle: "Directory",
-        teamsTitle: "Teams",
-        divisionsTitle: "Divisions",
-        seasonsTitle: "Seasons",
-        registrationsTitle: "Registrations"
+        directoryTitle: "Directorio",
+        teamsTitle: "Equipos",
+        divisionsTitle: "Divisiones",
+        seasonsTitle: "Estaciones",
+        registrationsTitle: "Inscripciones"
       },
       settings: {
         menuMap: {
-          base: "Basic Settings",
+          base: "Ajustes básicos",
           security: "Security Settings",
           notification: "Notification Settings"
         },
         avatar: "Avatar",
         base: {
           form: {
-            update: "Update",
+            update: "Actualizar",
             email: "Email",
             emailMessage: "Email is required",
             firstName: "First Name",
@@ -38,4 +38,4 @@ const en = {
   }
 };
 
-export default en;
+export default es;

@@ -5,7 +5,7 @@ import * as React from "react";
 import { Link, Route } from "react-router5";
 import styled from "styled-components";
 
-import { NamespacesConsumer } from "react-i18next";
+import { WithNamespaces, withNamespaces } from "react-i18next";
 import { Router } from "router5";
 import { removeAuthorizationToken } from "../../utils/authentication";
 import SelectLang from "../SelectLang";
@@ -71,7 +71,7 @@ export interface IUser {
   teams: ITeam;
 }
 
-export interface IRightContentProps {
+export interface IRightContentProps extends WithNamespaces {
   currentUser: IUser;
   isMobile: boolean;
   collapsed: boolean;
@@ -84,7 +84,7 @@ export interface IRightContentProps {
   router: Router;
 }
 
-class RightContent extends React.PureComponent<IRightContentProps, any> {
+class Content extends React.PureComponent<IRightContentProps, any> {
   public getNoticeData() {
     const { notices = [] } = this.props;
     if (notices.length === 0) {
@@ -124,30 +124,31 @@ class RightContent extends React.PureComponent<IRightContentProps, any> {
     }
   };
 
+  public changeLanguage = lng => {
+    const { i18n } = this.props;
+    i18n.changeLanguage(lng);
+  };
+
   public render() {
-    const { currentUser, theme } = this.props;
+    const { currentUser, theme, t } = this.props;
     const menu = (
-      <NamespacesConsumer>
-        {t => (
-          <Menu
-            className={styles.menu}
-            selectedKeys={[]}
-            onClick={this.onMenuClick}
-          >
-            <Menu.Item key="userinfo">
-              <Link routeName="dashboard.settings.account">
-                <Icon type="setting" />
-                {t("app.header.accountSettingsButton")}
-              </Link>
-            </Menu.Item>
-            <Menu.Divider />
-            <Menu.Item key="logout">
-              <Icon type="logout" />
-              {t("app.header.logOutButton")}
-            </Menu.Item>
-          </Menu>
-        )}
-      </NamespacesConsumer>
+      <Menu
+        className={styles.menu}
+        selectedKeys={[]}
+        onClick={this.onMenuClick}
+      >
+        <Menu.Item key="userinfo">
+          <Link routeName="dashboard.settings.account">
+            <Icon type="setting" />
+            {t("app.header.accountSettingsButton")}
+          </Link>
+        </Menu.Item>
+        <Menu.Divider />
+        <Menu.Item key="logout">
+          <Icon type="logout" />
+          {t("app.header.logOutButton")}
+        </Menu.Item>
+      </Menu>
     );
 
     const HeaderAvatar = () => (
@@ -174,7 +175,7 @@ class RightContent extends React.PureComponent<IRightContentProps, any> {
           <Dropdown overlay={menu}>
             <span className={`${styles.action} ${styles.account}`}>
               <AccountDropdown>
-                {`Hello, ${currentUser.firstName}`}
+                {`${t("app.header.greeting")}, ${currentUser.firstName}`}
                 {currentUser.avatarLink ? (
                   <HeaderAvatar />
                 ) : (
@@ -186,11 +187,16 @@ class RightContent extends React.PureComponent<IRightContentProps, any> {
         ) : (
           <Spin size="small" style={{ marginLeft: 8, marginRight: 8 }} />
         )}
-        <SelectLang className={styles.action} />
+        <SelectLang
+          onLanguageClick={this.changeLanguage}
+          className={styles.action}
+        />
       </div>
     );
   }
 }
+
+const RightContent = withNamespaces("translation")(Content);
 
 export default props => (
   <Route>{({ router }) => <RightContent router={router} {...props} />}</Route>
