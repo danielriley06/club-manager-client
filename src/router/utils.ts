@@ -44,8 +44,6 @@ export const getComponent = (
   const depth = nodeName === "" ? 1 : nodeSegments.length + 1;
 
   const segment = segments.slice(0, depth).join(".");
-  console.log("HEYFUCK", segments, nodeSegments, depth, segment);
   const route = getRoute(segment, allRoutes);
-  console.log("HEYFUCKNEXT", route);
   return route.component || null;
 };

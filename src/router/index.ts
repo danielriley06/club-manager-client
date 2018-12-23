@@ -8,7 +8,7 @@ import { routes } from "./routes";
 export function configureRouter(): Router {
   const router: Router = createRouter(routes, {
     defaultRoute: "user",
-    strictTrailingSlash: true
+    trailingSlashMode: "always"
   });
   router.usePlugin(loggerPlugin);
   router.usePlugin(

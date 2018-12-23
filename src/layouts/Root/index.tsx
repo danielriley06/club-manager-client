@@ -2,10 +2,11 @@ import * as React from "react";
 import { ApolloProvider } from "react-apollo";
 import { Provider } from "react-redux";
 import { RouterProvider } from "react-router5";
+import { Store } from "redux";
 import { Router } from "router5";
 
-import { Store } from "redux";
 import createClient from "../../graphql/createClient";
+import "../../locales/i18n";
 import { theme, ThemeProvider } from "../../styles";
 import App from "../App";
 

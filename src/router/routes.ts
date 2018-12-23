@@ -63,6 +63,20 @@ export const routes: IRoute[] = [
         path: "/seasons",
         canActivate: loggedInRequired,
         loadComponent: () => import("../pages/Seasons")
+      },
+      {
+        name: "settings",
+        path: "/settings",
+        canActivate: loggedInRequired,
+        loadComponent: () => import("../pages/Settings/Account/Info"),
+        children: [
+          {
+            name: "account",
+            path: "/account",
+            canActivate: loggedInRequired,
+            loadComponent: () => import("../pages/Settings/Account/BaseView")
+          }
+        ]
       }
     ]
   }

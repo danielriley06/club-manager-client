@@ -15,6 +15,10 @@ export function setAuthorizationToken(token: string): void {
   return localStorage.setItem(localStorageTokenName, token);
 }
 
+export function removeAuthorizationToken(): void {
+  return localStorage.removeItem(localStorageTokenName);
+}
+
 export function getAuthorizationToken(): string | undefined {
   const token = localStorage.getItem(localStorageTokenName) || undefined;
   return token;

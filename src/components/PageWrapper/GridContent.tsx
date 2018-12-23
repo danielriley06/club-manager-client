@@ -22,7 +22,7 @@ export default class GridContent extends React.PureComponent<
   IGridContentProps,
   any
 > {
-  public defaultProps = { contentWidth: "Fluid" };
+  public static defaultProps = { contentWidth: "Fluid" };
 
   public render() {
     const { children, contentWidth } = this.props;

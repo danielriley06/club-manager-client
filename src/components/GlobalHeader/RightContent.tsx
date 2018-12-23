@@ -2,8 +2,12 @@ import { Avatar, Dropdown, Icon, Menu, Spin, Tag } from "antd";
 import groupBy from "lodash/groupBy";
 import moment from "moment";
 import * as React from "react";
+import { Link, Route } from "react-router5";
 import styled from "styled-components";
 
+import { NamespacesConsumer } from "react-i18next";
+import { Router } from "router5";
+import { removeAuthorizationToken } from "../../utils/authentication";
 import SelectLang from "../SelectLang";
 import styles from "./index.less";
 
@@ -77,12 +81,10 @@ export interface IRightContentProps {
   onMenuClick?: () => void;
   notices?: any;
   theme?: any;
+  router: Router;
 }
 
-export default class RightContent extends React.PureComponent<
-  IRightContentProps,
-  any
-> {
+class RightContent extends React.PureComponent<IRightContentProps, any> {
   public getNoticeData() {
     const { notices = [] } = this.props;
     if (notices.length === 0) {
@@ -114,20 +116,38 @@ export default class RightContent extends React.PureComponent<
     return groupBy(newNotices, "type");
   }
 
+  public onMenuClick = ({ key }) => {
+    const { router } = this.props;
+    if (key === "logout") {
+      removeAuthorizationToken();
+      router.navigate("user.login", {}, { reload: true });
+    }
+  };
+
   public render() {
-    const { currentUser, onMenuClick, theme } = this.props;
+    const { currentUser, theme } = this.props;
     const menu = (
-      <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
-        <Menu.Item key="userinfo">
-          <Icon type="setting" />
-          Account Settings
-        </Menu.Item>
-        <Menu.Divider />
-        <Menu.Item key="logout">
-          <Icon type="logout" />
-          LOGOUTYES
-        </Menu.Item>
-      </Menu>
+      <NamespacesConsumer>
+        {t => (
+          <Menu
+            className={styles.menu}
+            selectedKeys={[]}
+            onClick={this.onMenuClick}
+          >
+            <Menu.Item key="userinfo">
+              <Link routeName="dashboard.settings.account">
+                <Icon type="setting" />
+                {t("app.header.accountSettingsButton")}
+              </Link>
+            </Menu.Item>
+            <Menu.Divider />
+            <Menu.Item key="logout">
+              <Icon type="logout" />
+              {t("app.header.logOutButton")}
+            </Menu.Item>
+          </Menu>
+        )}
+      </NamespacesConsumer>
     );
 
     const HeaderAvatar = () => (
@@ -171,3 +191,7 @@ export default class RightContent extends React.PureComponent<
     );
   }
 }
+
+export default props => (
+  <Route>{({ router }) => <RightContent router={router} {...props} />}</Route>
+);

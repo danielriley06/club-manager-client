@@ -76,7 +76,7 @@ export default class GlobalHeader extends React.Component<
   };
 
   public render() {
-    const { isMobile, collapsed } = this.props;
+    const { isMobile, collapsed, currentUser } = this.props;
     return (
       <div className={classNames(styles.header)}>
         {isMobile && (
@@ -92,7 +92,11 @@ export default class GlobalHeader extends React.Component<
             />
           </Trigger>
         )}
-        <RightContent {...this.props} />
+        <RightContent
+          currentUser={currentUser}
+          collapsed={collapsed}
+          isMobile={isMobile}
+        />
       </div>
     );
   }

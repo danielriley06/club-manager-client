@@ -88,6 +88,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
   };
 
   public render() {
+    console.log(this.props);
     const { isMobile, collapsed } = this.state;
     const { route, childRoute } = this.props;
     return (
