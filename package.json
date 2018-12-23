@@ -66,6 +66,7 @@
     "formik": "^1.4.0",
     "fs-extra": "7.0.0",
     "graphql": "^14.0.2",
+    "graphql-code-generator": "^0.15.1",
     "graphql-compiler": "^1.7.0",
     "graphql-tag": "^2.10.0",
     "html-webpack-plugin": "4.0.0-alpha.2",

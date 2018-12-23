@@ -3,7 +3,9 @@ import capitalize from "lodash/capitalize";
 import isEmpty from "lodash/isEmpty";
 import React from "react";
 
+import { ApolloError } from "apollo-client";
 import AccountIndicators from "../../components/AccountIndicators";
+import { IUser } from "../../types/types";
 
 const { Column } = Table;
 const { Item, SubMenu } = Menu;
@@ -83,41 +85,53 @@ const ActionColumn = () => (
   </span>
 );
 
-const DirectoryTable = ({ users, usersCount, fetchMore, loading, error }) => (
-  <Table
-    rowKey={setRowKey}
-    dataSource={users}
-    loading={loading}
-    pagination={{
-      total: usersCount,
-      pageSize: 25,
-      onChange: page =>
-        fetchMore({
-          variables: {
-            page
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) return prev;
-            return Object.assign({}, prev, {
-              users: [...prev.users, ...fetchMoreResult.users]
-            });
-          }
-        })
-    }}
-  >
-    <Column key="avatar" width={64} render={AvatarColumn} />
-    <Column key="name" title="Name" render={NameColumn} />
-    <Column key="email" title="Email" dataIndex="email" />
-    <Column key="cellphone" title="Phone" dataIndex="cellphone" />
-    <Column
-      key="teams"
-      title="Assigned Teams"
-      dataIndex="teams"
-      render={TeamsColumn}
-    />
-    <Column key="status" title="Status" render={AccountIndicators} />
-    <Column key="action" align="right" render={ActionColumn} />
-  </Table>
-);
+interface IDirectoryTableProps {
+  users: IUser[];
+  usersCount: number;
+  loading: boolean;
+  error: ApolloError | undefined;
+  fetchMore: any;
+  openEditModal: (e: any, item?: IUser) => void;
+}
+
+const DirectoryTable = (props: IDirectoryTableProps) => {
+  const { users, usersCount, fetchMore, loading } = props;
+  return (
+    <Table
+      rowKey={setRowKey}
+      dataSource={users}
+      loading={loading}
+      pagination={{
+        total: usersCount,
+        pageSize: 25,
+        onChange: page =>
+          fetchMore({
+            variables: {
+              page
+            },
+            updateQuery: (prev, { fetchMoreResult }) => {
+              if (!fetchMoreResult) return prev;
+              return Object.assign({}, prev, {
+                users: [...prev.users, ...fetchMoreResult.users]
+              });
+            }
+          })
+      }}
+    >
+      <Column key="avatar" width={64} render={AvatarColumn} />
+      <Column key="name" title="Name" render={NameColumn} />
+      <Column key="email" title="Email" dataIndex="email" />
+      <Column key="cellphone" title="Phone" dataIndex="cellphone" />
+      <Column
+        key="teams"
+        title="Assigned Teams"
+        dataIndex="teams"
+        render={TeamsColumn}
+      />
+      <Column key="status" title="Status" render={AccountIndicators} />
+      <Column key="action" align="right" render={ActionColumn} />
+    </Table>
+  );
+};
 
 export default DirectoryTable;
