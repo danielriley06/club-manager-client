@@ -1,8 +1,7 @@
 import { Layout } from "antd";
 import enquire from "enquire.js";
-import get from "lodash/get";
 import * as React from "react";
-import { RouteNode } from "react-router5";
+import { connect } from "react-redux";
 import { State } from "router5";
 
 import { Query } from "react-apollo";
@@ -11,10 +10,7 @@ import GlobalHeader from "../../components/GlobalHeader";
 import LoadingIndicator from "../../components/LoadingIndicator";
 import SiderMenuWrapper from "../../components/SiderMenu";
 import { CURRENT_USER_QUERY } from "../../graphql/queries/user";
-import Directory from "../../pages/Directory";
-import DivisionList from "../../pages/Divisions";
-import SeasonsList from "../../pages/Seasons";
-import Teams from "../../pages/Teams";
+import childRouteSelector from "../../store/selectors/childRoute";
 import styled from "../../styles/index";
 
 const { Content } = Layout;
@@ -27,6 +23,7 @@ export const StyledLogo = styled(Logo)`
 
 export interface IDashboardProps {
   route: State;
+  childRoute: React.ReactNode;
 }
 
 export interface IDashboardState {
@@ -90,33 +87,9 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     return null;
   };
 
-  public renderRoutes = () => {
-    const { route } = this.props;
-    const routeName = get(route, "name", "");
-    const childRouteName = routeName.split(".")[1];
-
-    if (childRouteName === "directory") {
-      return <Directory />;
-    }
-
-    if (childRouteName === "teams") {
-      return <Teams />;
-    }
-
-    if (childRouteName === "divisions") {
-      return <DivisionList />;
-    }
-
-    if (childRouteName === "seasons") {
-      return <SeasonsList />;
-    }
-
-    return <div>Well Shit</div>;
-  };
-
   public render() {
     const { isMobile, collapsed } = this.state;
-    const { route } = this.props;
+    const { route, childRoute } = this.props;
     return (
       <Query query={CURRENT_USER_QUERY}>
         {({ loading, error, data }) => {
@@ -154,7 +127,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
                     margin: "24px"
                   }}
                 >
-                  {this.renderRoutes()}
+                  {childRoute}
                 </Content>
               </Layout>
             </Layout>
@@ -165,8 +138,4 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
   }
 }
 
-export default props => (
-  <RouteNode nodeName="dashboard">
-    {({ route }) => <Dashboard route={route} {...props} />}
-  </RouteNode>
-);
+export default connect(childRouteSelector("dashboard"))(Dashboard);

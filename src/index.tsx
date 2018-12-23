@@ -1,26 +1,28 @@
 import "antd/dist/antd.css";
 import * as React from "react";
-import { ApolloProvider } from "react-apollo";
 import * as ReactDOM from "react-dom";
-import { RouterProvider } from "react-router5";
 
-import createClient from "./graphql/createClient";
 import Root from "./layouts/Root";
 import "./locales/i18n";
-import createRouter from "./router/createRouter";
-import { theme, ThemeProvider } from "./styles";
+import { configureRouter } from "./router";
+import configureStore from "./store";
 
-const router = createRouter();
+const router = configureRouter();
+const store = configureStore(router, window.APP_STATE);
 
-router.start(() => {
+router.start("/", () => {
   ReactDOM.render(
-    <ApolloProvider client={createClient}>
-      <ThemeProvider theme={theme}>
-        <RouterProvider router={router}>
-          <Root />
-        </RouterProvider>
-      </ThemeProvider>
-    </ApolloProvider>,
+    <Root router={router} store={store}>
+      <small
+        style={{
+          display: "block",
+          background: "#000",
+          color: "#fff"
+        }}
+      >
+        client-side
+      </small>
+    </Root>,
     document.getElementById("root")
   );
 });

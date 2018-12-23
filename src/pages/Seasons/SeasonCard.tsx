@@ -8,7 +8,7 @@ interface ISeasonCardProps {
   season: ISeason;
 }
 
-const SeasonCard: React.SFC<ISeasonCardProps> = ({ season }) => {
+const SeasonCard: React.FunctionComponent<ISeasonCardProps> = ({ season }) => {
   const formattedStartDate = formatSeasonDate(season.startDate);
   const formattedEndDate = formatSeasonDate(season.endDate);
   return (

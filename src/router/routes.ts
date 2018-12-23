@@ -1,4 +1,5 @@
-import { Route, State } from "router5";
+import { State } from "router5";
+import { IRoute } from "../types/routes";
 import { userIsLoggedIn } from "../utils/authentication";
 
 export const loggedInRequired = () => (toState: State, fromState: State) => {
@@ -18,29 +19,51 @@ export const authenticationRequired = () => (
   return Promise.reject({ redirect: { name: "dashboard" } });
 };
 
-export const routes: Route[] = [
+export const routes: IRoute[] = [
   {
-    children: [
-      { name: "login", path: "/login", canActivate: authenticationRequired },
-      {
-        canActivate: authenticationRequired,
-        name: "register",
-        path: "/register"
-      }
-    ],
-    forwardTo: "user.login",
     name: "user",
-    path: "/user"
+    path: "/user",
+    forwardTo: "user.login",
+    loadComponent: () => import("../layouts/User"),
+    children: [
+      {
+        name: "login",
+        path: "/login",
+        canActivate: authenticationRequired,
+        loadComponent: () => import("../pages/User/Login")
+      }
+    ]
   },
   {
-    children: [
-      { name: "directory", path: "/directory", canActivate: loggedInRequired },
-      { name: "teams", path: "/teams", canActivate: loggedInRequired },
-      { name: "divisions", path: "/divisions", canActivate: loggedInRequired },
-      { name: "seasons", path: "/seasons", canActivate: loggedInRequired }
-    ],
-    forwardTo: "dashboard.directory",
     name: "dashboard",
-    path: "/dashboard"
+    path: "/dashboard",
+    forwardTo: "dashboard.directory",
+    loadComponent: () => import("../layouts/Dashboard"),
+    children: [
+      {
+        name: "directory",
+        path: "/directory",
+        canActivate: loggedInRequired,
+        loadComponent: () => import("../pages/Directory")
+      },
+      {
+        name: "teams",
+        path: "/teams",
+        canActivate: loggedInRequired,
+        loadComponent: () => import("../pages/Teams")
+      },
+      {
+        name: "divisions",
+        path: "/divisions",
+        canActivate: loggedInRequired,
+        loadComponent: () => import("../pages/Divisions")
+      },
+      {
+        name: "seasons",
+        path: "/seasons",
+        canActivate: loggedInRequired,
+        loadComponent: () => import("../pages/Seasons")
+      }
+    ]
   }
 ];

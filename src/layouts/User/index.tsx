@@ -1,9 +1,9 @@
-import get from "lodash/get";
 import * as React from "react";
-import { Link, RouteNode } from "react-router5";
+import { Link } from "react-router5";
 import { State } from "router5";
 
-import Login from "../../pages/User/Login";
+import { connect } from "react-redux";
+import childRouteSelector from "../../store/selectors/childRoute";
 import {
   Container,
   Content,
@@ -16,45 +16,24 @@ import {
 
 export interface IUserProps {
   route: State;
+  childRoute: React.ReactNode;
 }
 
-class User extends React.Component<IUserProps, any> {
-  public renderRoute = () => {
-    const { route } = this.props;
-    const routeName = get(route, "name", "");
-    const childRouteName = routeName.split(".")[1];
-    switch (childRouteName) {
-      case "login": {
-        return <Login />;
-      }
-      default: {
-        return <div>FUCK ME</div>;
-      }
-    }
-  };
-
-  public render() {
-    return (
-      <Container>
-        <Language />
-        <Content>
-          <Top>
-            <Header>
-              <Link routeName="home">
-                <StyledLogo />
-                <Title>Soul City S. C.</Title>
-              </Link>
-            </Header>
-          </Top>
-          {this.renderRoute()}
-        </Content>
-      </Container>
-    );
-  }
-}
-
-export default props => (
-  <RouteNode nodeName="user">
-    {({ route }) => <User route={route} {...props} />}
-  </RouteNode>
+const User: React.FunctionComponent<IUserProps> = ({ childRoute }) => (
+  <Container>
+    <Language />
+    <Content>
+      <Top>
+        <Header>
+          <Link routeName="home">
+            <StyledLogo />
+            <Title>Soul City S. C.</Title>
+          </Link>
+        </Header>
+      </Top>
+      {childRoute}
+    </Content>
+  </Container>
 );
+
+export default connect(childRouteSelector("user"))(User);

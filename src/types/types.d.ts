@@ -1,3 +1,10 @@
+declare global {
+  interface Window {
+    store: object | undefined;
+    APP_STATE: object | undefined;
+  }
+}
+
 export interface IDivision {
   id: number;
   name: string;
