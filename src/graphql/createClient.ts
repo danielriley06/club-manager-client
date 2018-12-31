@@ -13,6 +13,7 @@ const customFetch = (uri, options) => {
   const token = getAuthorizationToken();
   const authHeader = `Bearer ${token}`;
   options.headers.Authorization = authHeader;
+  options.credentials = "include";
   return fetch(uri, options);
 };
 

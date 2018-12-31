@@ -12,11 +12,10 @@ const userFragment = gql`
     mobileNumberVerified
     gender
     dateOfBirth
-    active
+    accountIsActive
     emailVerified
     invitedToDashboard
     inviteAccepted
-    avatarLink
     createdAt
     updatedAt
     isClubOwner

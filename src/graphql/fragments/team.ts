@@ -19,7 +19,13 @@ const teamFragment = gql`
     division {
       id
       name
-      ancestorName
+      description
+      parentId
+      children {
+        id
+        name
+        parentId
+      }
     }
     season {
       id

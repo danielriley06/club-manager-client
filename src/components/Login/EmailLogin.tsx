@@ -57,7 +57,12 @@ class EmailLogin extends React.Component<ILoginProps, any> {
   ) => {
     const { router } = this.props;
     const requestUrl = `${process.env.REACT_APP_API_URL}/user_token`;
-    const request = await ky.post(requestUrl, { json: { ...values } });
+    const request = await ky.post(requestUrl, {
+      headers: {
+        "content-type": "application/json"
+      },
+      json: { ...values }
+    });
     if (request.status === 201) {
       const response = await request.json();
       setAuthorizationToken(response.jwt);

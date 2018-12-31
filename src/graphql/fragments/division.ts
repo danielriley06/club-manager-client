@@ -4,13 +4,11 @@ const divisionFragment = gql`
   fragment divisionFragment on Division {
     id
     name
-    ancestry
-    ancestorName
+    parentId
     children {
       id
       name
-      ancestry
-      ancestorName
+      parentId
     }
   }
 `;
